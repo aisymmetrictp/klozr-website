@@ -390,30 +390,40 @@
       display: grid; place-items: center; font-size: 11px;
     }
 
-    /* Mockup stage — tight wrapper that the floating chips anchor to */
-    .mockup-stage { position: relative; }
-
-    /* Floating chips around mockup */
+    /* Floating chips — positioned around the hero, NEVER over the dashboard mockup */
+    .hero { position: relative; }
+    .hero-floats {
+      position: absolute; inset: 0; pointer-events: none;
+      z-index: 3;
+      max-width: var(--container); margin: 0 auto; left: 0; right: 0;
+    }
     .float-chip {
-      position: absolute; padding: 8px 12px; border-radius: 999px;
+      position: absolute; padding: 8px 13px; border-radius: 999px;
       background: var(--panel-strong); border: 1px solid var(--line-strong);
-      backdrop-filter: blur(12px); font-size: 12px; font-weight: 600;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      font-size: 12.5px; font-weight: 600;
       box-shadow: var(--shadow-md);
       display: flex; align-items: center; gap: 8px;
       white-space: nowrap;
-      animation: floaty 6s ease-in-out infinite;
-      z-index: 2;
+      pointer-events: auto;
+      animation: floaty 7s ease-in-out infinite;
     }
-    .float-chip .glow { width: 8px; height: 8px; border-radius: 50%; }
-    .chip-a { top: -14px; left: 18px; }
-    .chip-b { bottom: 18px; right: 16px; animation-delay: -2s; }
-    .chip-c { top: 42%; left: -8px; animation-delay: -4s; }
+    .float-chip .glow { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+    /* Six chips, positioned in the hero whitespace around the mockup */
+    .f-1 { top: calc(var(--nav-h) + 18px); left: 24px; animation-delay: 0s; }
+    .f-2 { top: 46%; left: -14px; animation-delay: -1.4s; }
+    .f-3 { bottom: 70px; left: 18%; animation-delay: -2.6s; }
+    .f-4 { top: calc(var(--nav-h) + 18px); right: 18%; animation-delay: -3.4s; }
+    .f-5 { top: 56%; right: -10px; animation-delay: -4.6s; }
+    .f-6 { bottom: 80px; right: 22%; animation-delay: -5.6s; }
     @keyframes floaty {
       0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+      50%     { transform: translateY(-7px); }
     }
-    @media (max-width: 1280px) { .chip-c { display: none; } }
-    @media (max-width: 1080px) { .chip-a, .chip-b, .chip-c { display: none; } }
+    /* Responsive: progressively hide chips that would crowd or overlap the mockup */
+    @media (max-width: 1280px) { .f-2, .f-5 { display: none; } }
+    @media (max-width: 1180px) { .f-3, .f-6 { display: none; } }
+    @media (max-width: 1080px) { .f-1, .f-4 { display: none; } }
 
     /* ---------- KPI strip ---------- */
     .kpi {
@@ -915,6 +925,15 @@
 
     <!-- ========== HERO ========== -->
     <section class="hero" id="hero">
+      <!-- Floating "live system" chips arranged around the hero (not over the dashboard) -->
+      <div class="hero-floats" aria-hidden="true">
+        <div class="float-chip f-1"><span class="glow" style="background:#38e0a4;box-shadow:0 0 10px #38e0a4;"></span> 12 sequences active</div>
+        <div class="float-chip f-2"><span class="glow" style="background:#ffb454;box-shadow:0 0 10px #ffb454;"></span> Compliance check passed</div>
+        <div class="float-chip f-3"><span class="glow" style="background:#7c5cff;box-shadow:0 0 10px #7c5cff;"></span> 8 drafts awaiting approval</div>
+        <div class="float-chip f-4"><span class="glow" style="background:#38e0a4;box-shadow:0 0 10px #38e0a4;"></span> 137 Tier-A leads ready</div>
+        <div class="float-chip f-5"><span class="glow" style="background:#00d4ff;box-shadow:0 0 10px #00d4ff;"></span> Reply detected — paused</div>
+        <div class="float-chip f-6"><span class="glow" style="background:#ff4fa3;box-shadow:0 0 10px #ff4fa3;"></span> Pipeline +$340K today</div>
+      </div>
       <div class="container hero-grid">
         <div class="reveal">
           <span class="eyebrow"><span class="dot"></span> Autonomous Sales Execution Layer</span>
@@ -936,11 +955,6 @@
 
         <!-- Hero dashboard mockup -->
         <div class="reveal">
-          <div class="mockup-stage">
-            <div class="float-chip chip-a"><span class="glow" style="background:#38e0a4;box-shadow:0 0 10px #38e0a4;"></span> 137 Tier-A leads ready</div>
-            <div class="float-chip chip-b"><span class="glow" style="background:#00d4ff;box-shadow:0 0 10px #00d4ff;"></span> Reply detected — paused</div>
-            <div class="float-chip chip-c"><span class="glow" style="background:#7c5cff;box-shadow:0 0 10px #7c5cff;"></span> Brief ready · 10:30 call</div>
-
           <div class="mockup" id="heroMockup">
             <div class="mockup-bar">
               <span class="dot"></span><span class="dot"></span><span class="dot"></span>
@@ -1033,7 +1047,6 @@
               </div>
             </div>
           </div>
-          </div><!-- /.mockup-stage -->
         </div>
       </div>
     </section>
