@@ -1,0 +1,2038 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0b14" />
+  <title>Klozr — Autonomous Sales Execution Layer</title>
+  <meta name="description" content="Klozr is the AI Sales Engine that scores your best prospects, writes personalized outreach, guides follow-up, and helps your team close faster." />
+  <meta property="og:title" content="Klozr — Autonomous Sales Execution Layer" />
+  <meta property="og:description" content="Turn messy sales data into prioritized outreach, guided selling, and closed revenue." />
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%237c5cff'/><stop offset='1' stop-color='%2300d4ff'/></linearGradient></defs><rect rx='14' width='64' height='64' fill='url(%23g)'/><path d='M18 14h8v16l12-16h10L34 32l14 18H38L26 34v16h-8z' fill='white'/></svg>" />
+
+  <style>
+    /* ============================================================
+       KLOZR — single-file site
+       Sections: tokens, base, layout, nav, hero, dashboard mockup,
+       kpi strip, problem, platform, workflow, product tabs, AI layer,
+       industry toggle, industry cards, integrations, security, admin,
+       pricing, cta, footer, utilities, animations, responsive.
+    ============================================================ */
+
+    /* ---------- Design tokens ---------- */
+    :root {
+      --bg-0: #07080f;
+      --bg-1: #0b0d18;
+      --bg-2: #10131f;
+      --bg-3: #161a2a;
+      --panel: rgba(20, 23, 38, 0.62);
+      --panel-strong: rgba(24, 28, 46, 0.85);
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.14);
+      --text: #e7eaf5;
+      --text-dim: #a4abc4;
+      --text-mute: #6b7390;
+      --brand: #7c5cff;
+      --brand-2: #00d4ff;
+      --brand-3: #ff4fa3;
+      --success: #38e0a4;
+      --warn: #ffb454;
+      --danger: #ff6a6a;
+      --grad-brand: linear-gradient(135deg, #7c5cff 0%, #00d4ff 100%);
+      --grad-warm: linear-gradient(135deg, #ff4fa3 0%, #7c5cff 60%, #00d4ff 100%);
+      --grad-text: linear-gradient(180deg, #ffffff 0%, #b9bcd6 100%);
+      --shadow-lg: 0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      --shadow-md: 0 12px 30px -10px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --radius-xl: 28px;
+      --container: 1200px;
+      --nav-h: 68px;
+      --ease: cubic-bezier(.22,.61,.36,1);
+      --font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    }
+    html[data-theme="light"] {
+      --bg-0: #f4f5fb;
+      --bg-1: #ffffff;
+      --bg-2: #f7f8fd;
+      --bg-3: #eef0f8;
+      --panel: rgba(255,255,255,0.78);
+      --panel-strong: rgba(255,255,255,0.95);
+      --line: rgba(10, 12, 30, 0.08);
+      --line-strong: rgba(10, 12, 30, 0.16);
+      --text: #0c0f1c;
+      --text-dim: #4a5170;
+      --text-mute: #7a809a;
+      --grad-text: linear-gradient(180deg, #0c0f1c 0%, #4a5170 100%);
+      --shadow-lg: 0 30px 70px -25px rgba(20, 24, 60, 0.25), 0 0 0 1px rgba(10,12,30,0.05) inset;
+      --shadow-md: 0 14px 30px -14px rgba(20, 24, 60, 0.18), 0 0 0 1px rgba(10,12,30,0.04) inset;
+    }
+
+    /* ---------- Reset & base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--bg-0);
+      line-height: 1.55;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    ::selection { background: rgba(124,92,255,0.35); color: #fff; }
+
+    /* ---------- Animated background field ---------- */
+    .bg-field {
+      position: fixed; inset: 0; z-index: -2; pointer-events: none;
+      background:
+        radial-gradient(1100px 600px at 12% -10%, rgba(124,92,255,0.22), transparent 60%),
+        radial-gradient(900px 500px at 92% 8%, rgba(0,212,255,0.16), transparent 60%),
+        radial-gradient(800px 600px at 50% 110%, rgba(255,79,163,0.10), transparent 60%),
+        var(--bg-0);
+    }
+    .bg-grid {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse at 50% 30%, black 35%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 35%, transparent 75%);
+    }
+    html[data-theme="light"] .bg-grid {
+      background-image:
+        linear-gradient(to right, rgba(10,12,30,0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(10,12,30,0.05) 1px, transparent 1px);
+    }
+    html[data-theme="light"] .bg-field {
+      background:
+        radial-gradient(1000px 600px at 10% -10%, rgba(124,92,255,0.12), transparent 60%),
+        radial-gradient(900px 500px at 95% 5%, rgba(0,212,255,0.10), transparent 60%),
+        var(--bg-0);
+    }
+
+    /* ---------- Layout primitives ---------- */
+    .container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+    section { position: relative; padding: 110px 0; }
+    @media (max-width: 720px) { section { padding: 72px 0; } }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px; border-radius: 999px;
+      background: rgba(124,92,255,0.10);
+      border: 1px solid rgba(124,92,255,0.30);
+      color: #c8bdff;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-2); box-shadow: 0 0 12px var(--brand-2); }
+    .section-title {
+      font-size: clamp(28px, 3.6vw, 46px); line-height: 1.08; letter-spacing: -0.02em;
+      font-weight: 700; margin: 16px 0 14px;
+      background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .section-sub { color: var(--text-dim); max-width: 720px; font-size: 17px; }
+    .section-head { margin-bottom: 56px; }
+    .section-head.center { text-align: center; margin-left: auto; margin-right: auto; }
+    .section-head.center .section-sub { margin: 0 auto; }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 18px; border-radius: 12px; font-weight: 600; font-size: 14.5px;
+      border: 1px solid var(--line-strong); background: rgba(255,255,255,0.03);
+      color: var(--text); transition: transform .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease);
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+    .btn-primary {
+      background: var(--grad-brand); border: none; color: #fff;
+      box-shadow: 0 10px 30px -10px rgba(124,92,255,0.55), inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 16px 40px -10px rgba(124,92,255,0.70), inset 0 1px 0 rgba(255,255,255,0.3); }
+    .btn-ghost { background: transparent; }
+    .btn-lg { padding: 14px 22px; font-size: 15px; border-radius: 14px; }
+    .btn .arrow { transition: transform .25s var(--ease); }
+    .btn:hover .arrow { transform: translateX(3px); }
+
+    /* ---------- Navigation ---------- */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: var(--nav-h); display: flex; align-items: center;
+      backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+      background: rgba(10, 11, 20, 0.55);
+      border-bottom: 1px solid transparent;
+      transition: background .3s var(--ease), border-color .3s var(--ease);
+    }
+    html[data-theme="light"] .nav { background: rgba(255,255,255,0.65); }
+    .nav.scrolled { background: rgba(10, 11, 20, 0.85); border-bottom-color: var(--line); }
+    html[data-theme="light"] .nav.scrolled { background: rgba(255,255,255,0.85); }
+    .nav-inner { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.01em; font-size: 18px; }
+    .brand-mark {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: var(--grad-brand);
+      display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px;
+      box-shadow: 0 6px 18px -4px rgba(124,92,255,0.6), inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .brand-name { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { color: var(--text-dim); font-size: 14px; font-weight: 500; transition: color .2s var(--ease); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+      color: var(--text-dim);
+    }
+    .icon-btn:hover { color: var(--text); background: rgba(255,255,255,0.07); }
+    .nav-toggle { display: none; }
+    @media (max-width: 940px) {
+      .nav-links, .nav-actions .btn { display: none; }
+      .nav-toggle { display: grid; }
+    }
+    .mobile-menu {
+      position: fixed; top: var(--nav-h); left: 0; right: 0; z-index: 99;
+      background: rgba(7,8,15,0.92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+      transform: translateY(-110%); transition: transform .35s var(--ease);
+      padding: 18px 24px 24px;
+    }
+    html[data-theme="light"] .mobile-menu { background: rgba(255,255,255,0.96); }
+    .mobile-menu.open { transform: translateY(0); }
+    .mobile-menu a { display: block; padding: 14px 0; color: var(--text); font-size: 18px; font-weight: 500; border-bottom: 1px solid var(--line); }
+    .mobile-menu .btn { width: 100%; margin-top: 18px; }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      padding-top: calc(var(--nav-h) + 80px);
+      padding-bottom: 100px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center;
+    }
+    @media (max-width: 1080px) { .hero-grid { grid-template-columns: 1fr; gap: 56px; } }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.02; letter-spacing: -0.035em; font-weight: 700;
+      margin: 18px 0 20px;
+    }
+    .hero h1 .grad {
+      background: var(--grad-warm); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p.lead {
+      font-size: 19px; color: var(--text-dim); max-width: 560px; margin-bottom: 32px;
+    }
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-trust {
+      margin-top: 36px; display: flex; flex-wrap: wrap; gap: 18px 28px; color: var(--text-mute); font-size: 13px;
+    }
+    .hero-trust .item { display: flex; align-items: center; gap: 8px; }
+    .hero-trust .check {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: rgba(56,224,164,0.15); color: var(--success);
+      display: grid; place-items: center; font-size: 10px; font-weight: 800;
+    }
+
+    /* ---------- Hero dashboard mockup ---------- */
+    .mockup {
+      position: relative;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(28,32,52,0.92), rgba(16,19,31,0.92));
+      border: 1px solid var(--line-strong);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+    html[data-theme="light"] .mockup { background: linear-gradient(180deg, #ffffff, #f7f8fd); }
+    .mockup::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(600px 200px at 50% -10%, rgba(124,92,255,0.25), transparent 60%);
+    }
+    .mockup-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 18px; border-bottom: 1px solid var(--line);
+    }
+    .mockup-bar .dot { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.12); }
+    .mockup-bar .dot:nth-child(1) { background: #ff6a6a; }
+    .mockup-bar .dot:nth-child(2) { background: #ffb454; }
+    .mockup-bar .dot:nth-child(3) { background: #38e0a4; }
+    .mockup-bar .url {
+      margin-left: 12px; font-family: var(--mono); font-size: 12px; color: var(--text-mute);
+      padding: 6px 10px; background: rgba(255,255,255,0.04); border-radius: 8px; border: 1px solid var(--line);
+    }
+    .mockup-grid {
+      padding: 18px; display: grid; gap: 14px;
+      grid-template-columns: 1.2fr 1fr;
+      grid-template-areas:
+        "score  email"
+        "seq    email"
+        "pipe   intel";
+    }
+    @media (max-width: 720px) {
+      .mockup-grid { grid-template-columns: 1fr; grid-template-areas: "score" "email" "seq" "pipe" "intel"; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .panel-title h4 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-mute); font-weight: 600; }
+    .panel-title .live {
+      font-size: 11px; color: var(--success); display: inline-flex; align-items: center; gap: 6px;
+    }
+    .panel-title .live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); animation: pulse 1.6s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(0.9); } }
+
+    /* Score panel */
+    .panel-score { grid-area: score; }
+    .score-row {
+      display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center;
+      padding: 10px 8px; border-radius: 10px;
+      transition: background .2s var(--ease);
+    }
+    .score-row + .score-row { border-top: 1px solid var(--line); }
+    .score-row:hover { background: rgba(255,255,255,0.03); }
+    .avatar { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: #fff; }
+    .a1 { background: linear-gradient(135deg,#7c5cff,#00d4ff); }
+    .a2 { background: linear-gradient(135deg,#ff4fa3,#ffb454); }
+    .a3 { background: linear-gradient(135deg,#38e0a4,#00d4ff); }
+    .a4 { background: linear-gradient(135deg,#ffb454,#ff6a6a); }
+    .lead-name { font-size: 13.5px; font-weight: 600; }
+    .lead-meta { font-size: 11.5px; color: var(--text-mute); }
+    .tier {
+      font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; letter-spacing: 0.04em;
+    }
+    .tier.A { background: rgba(56,224,164,0.14); color: var(--success); }
+    .tier.B { background: rgba(0,212,255,0.14); color: var(--brand-2); }
+    .tier.C { background: rgba(255,180,84,0.14); color: var(--warn); }
+
+    /* Email panel */
+    .panel-email { grid-area: email; display: flex; flex-direction: column; }
+    .email-meta {
+      display: flex; flex-direction: column; gap: 4px; padding-bottom: 10px; border-bottom: 1px solid var(--line); margin-bottom: 10px;
+    }
+    .email-meta .row { display: flex; gap: 8px; font-size: 12px; }
+    .email-meta .label { color: var(--text-mute); width: 44px; }
+    .email-meta .val { color: var(--text); }
+    .email-body {
+      font-size: 13px; line-height: 1.6; color: var(--text-dim);
+      flex: 1;
+      min-height: 120px;
+    }
+    .email-body .typing::after {
+      content: "▋"; color: var(--brand-2); margin-left: 1px;
+      animation: blink 1s steps(2,start) infinite;
+    }
+    @keyframes blink { to { visibility: hidden; } }
+    .email-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .pill {
+      font-size: 12px; padding: 7px 12px; border-radius: 8px; font-weight: 600;
+      border: 1px solid var(--line); background: rgba(255,255,255,0.03); color: var(--text-dim);
+      transition: all .2s var(--ease);
+    }
+    .pill:hover { color: var(--text); border-color: var(--line-strong); }
+    .pill.primary { background: var(--grad-brand); color: #fff; border-color: transparent; }
+    .pill.danger { color: #ffb6b6; border-color: rgba(255,106,106,0.25); }
+
+    /* Sequence panel */
+    .panel-seq { grid-area: seq; }
+    .seq-step { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 10px; padding: 8px 0; }
+    .seq-step + .seq-step { border-top: 1px solid var(--line); }
+    .seq-icon { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+    .seq-icon.done { background: rgba(56,224,164,0.18); color: var(--success); }
+    .seq-icon.now  { background: rgba(0,212,255,0.18); color: var(--brand-2); animation: pulse 1.6s infinite; }
+    .seq-icon.todo { background: rgba(255,255,255,0.06); color: var(--text-mute); }
+    .seq-name { font-size: 13px; font-weight: 500; }
+    .seq-meta { font-size: 11.5px; color: var(--text-mute); }
+    .seq-time { font-size: 11.5px; color: var(--text-mute); }
+
+    /* Pipeline panel */
+    .panel-pipe { grid-area: pipe; }
+    .pipe-bars { display: grid; gap: 8px; margin-top: 4px; }
+    .pipe-row { display: grid; grid-template-columns: 100px 1fr 64px; gap: 10px; align-items: center; font-size: 12px; }
+    .pipe-row .label { color: var(--text-dim); }
+    .bar {
+      height: 8px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden;
+    }
+    .bar > i {
+      display: block; height: 100%; border-radius: inherit;
+      background: var(--grad-brand);
+      transform: translateX(-100%);
+      animation: slidein 1.2s var(--ease) forwards;
+    }
+    @keyframes slidein { to { transform: translateX(0); } }
+    .pipe-row .val { text-align: right; color: var(--text); font-weight: 600; }
+
+    /* Intel panel */
+    .panel-intel { grid-area: intel; }
+    .intel-list { display: grid; gap: 8px; }
+    .intel-item { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--text-dim); }
+    .intel-item .ico {
+      flex: 0 0 22px; width: 22px; height: 22px; border-radius: 6px; background: rgba(124,92,255,0.18); color: #c5b9ff;
+      display: grid; place-items: center; font-size: 11px;
+    }
+
+    /* Floating chips around mockup */
+    .float-chip {
+      position: absolute; padding: 8px 12px; border-radius: 999px;
+      background: var(--panel-strong); border: 1px solid var(--line-strong);
+      backdrop-filter: blur(12px); font-size: 12px; font-weight: 600;
+      box-shadow: var(--shadow-md);
+      display: flex; align-items: center; gap: 8px;
+      animation: floaty 6s ease-in-out infinite;
+    }
+    .float-chip .glow { width: 8px; height: 8px; border-radius: 50%; }
+    .chip-a { top: -16px; left: -22px; }
+    .chip-b { bottom: 28px; right: -28px; animation-delay: -2s; }
+    .chip-c { top: 38%; right: -36px; animation-delay: -4s; }
+    @keyframes floaty {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @media (max-width: 1080px) {
+      .chip-a, .chip-b, .chip-c { display: none; }
+    }
+
+    /* ---------- KPI strip ---------- */
+    .kpi {
+      padding: 30px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    }
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    @media (max-width: 800px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .kpi-item { text-align: center; }
+    .kpi-num {
+      font-size: clamp(32px, 4vw, 48px); font-weight: 700; letter-spacing: -0.02em;
+      background: var(--grad-brand); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .kpi-label { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+
+    /* ---------- Problem section ---------- */
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    @media (max-width: 900px) { .problem-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .problem-grid { grid-template-columns: 1fr; } }
+    .problem-card {
+      padding: 22px; border-radius: var(--radius-md);
+      background: var(--panel); border: 1px solid var(--line);
+      transition: transform .25s var(--ease), border-color .25s var(--ease);
+    }
+    .problem-card:hover { transform: translateY(-3px); border-color: var(--line-strong); }
+    .problem-card .x {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(255,106,106,0.12); color: #ffa8a8;
+      display: grid; place-items: center; margin-bottom: 12px; font-weight: 700;
+    }
+    .problem-card h4 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+    .problem-card p { margin: 0; color: var(--text-dim); font-size: 14px; line-height: 1.55; }
+
+    /* ---------- Platform capabilities ---------- */
+    .cap-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    }
+    @media (max-width: 1080px) { .cap-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 760px) { .cap-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .cap-grid { grid-template-columns: 1fr; } }
+    .cap-card {
+      padding: 22px; border-radius: var(--radius-md);
+      background: var(--panel); border: 1px solid var(--line);
+      transition: all .3s var(--ease);
+      position: relative; overflow: hidden;
+    }
+    .cap-card::after {
+      content: ""; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(135deg, rgba(124,92,255,0.0), rgba(0,212,255,0.0));
+      opacity: 0; transition: opacity .35s var(--ease);
+    }
+    .cap-card:hover { border-color: rgba(124,92,255,0.35); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .cap-card:hover::after { opacity: 1; background: linear-gradient(135deg, rgba(124,92,255,0.10), rgba(0,212,255,0.06)); }
+    .cap-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(124,92,255,0.20), rgba(0,212,255,0.18));
+      border: 1px solid rgba(124,92,255,0.28);
+      display: grid; place-items: center; margin-bottom: 14px; color: #d8d2ff;
+    }
+    .cap-card h4 { margin: 0 0 6px; font-size: 15.5px; font-weight: 600; }
+    .cap-card p { margin: 0; color: var(--text-dim); font-size: 13.5px; line-height: 1.55; }
+
+    /* ---------- Workflow ---------- */
+    .flow {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    }
+    @media (max-width: 1080px) { .flow { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .flow { grid-template-columns: 1fr; } }
+    .flow-step {
+      position: relative;
+      padding: 18px; border-radius: var(--radius-md);
+      background: var(--panel); border: 1px solid var(--line);
+    }
+    .flow-step .num {
+      position: absolute; top: 14px; right: 14px;
+      font-family: var(--mono); font-size: 11px; color: var(--text-mute);
+    }
+    .flow-step .ico {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--grad-brand); color: #fff; display: grid; place-items: center; margin-bottom: 12px;
+      box-shadow: 0 8px 22px -8px rgba(124,92,255,0.55);
+    }
+    .flow-step h4 { margin: 0 0 4px; font-size: 14.5px; font-weight: 600; }
+    .flow-step p { margin: 0; color: var(--text-dim); font-size: 12.5px; }
+
+    /* ---------- Product tabs ---------- */
+    .product-shell {
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(24,28,46,0.85), rgba(14,16,28,0.85));
+      border: 1px solid var(--line-strong);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+    html[data-theme="light"] .product-shell { background: linear-gradient(180deg, #ffffff, #f5f7fc); }
+    .tabs {
+      display: flex; gap: 4px; padding: 12px; border-bottom: 1px solid var(--line);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      padding: 10px 16px; border-radius: 10px; font-size: 14px; font-weight: 500;
+      color: var(--text-dim); background: transparent; border: 1px solid transparent;
+      transition: all .2s var(--ease); white-space: nowrap;
+    }
+    .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .tab[aria-selected="true"] {
+      color: var(--text); background: rgba(124,92,255,0.12); border-color: rgba(124,92,255,0.30);
+    }
+    .tab-body { padding: 28px; min-height: 380px; }
+    .tab-panel { display: none; animation: fadein .4s var(--ease); }
+    .tab-panel.active { display: block; }
+    @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .tab-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch;
+    }
+    @media (max-width: 880px) { .tab-grid { grid-template-columns: 1fr; } }
+    .tab-copy h3 { font-size: 22px; letter-spacing: -0.01em; margin: 0 0 8px; }
+    .tab-copy p.lead { color: var(--text-dim); font-size: 15px; margin: 0 0 18px; }
+    .tab-bullets { display: grid; gap: 10px; padding: 0; margin: 0; list-style: none; }
+    .tab-bullets li {
+      display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-dim);
+    }
+    .tab-bullets li::before {
+      content: ""; flex: 0 0 16px; width: 16px; height: 16px; margin-top: 3px; border-radius: 50%;
+      background: rgba(124,92,255,0.18);
+      box-shadow: inset 0 0 0 1px rgba(124,92,255,0.45);
+      position: relative;
+    }
+    .tab-visual {
+      background: rgba(8,10,18,0.55);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      min-height: 320px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    html[data-theme="light"] .tab-visual { background: #fbfcfe; }
+
+    /* Score visual */
+    .score-card {
+      background: var(--panel-strong); border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+    }
+    .score-head { display: flex; align-items: center; justify-content: space-between; }
+    .score-head .who { display: flex; align-items: center; gap: 10px; }
+    .score-circle {
+      --p: 86;
+      width: 64px; height: 64px; border-radius: 50%;
+      background:
+        conic-gradient(var(--brand) calc(var(--p) * 1%), rgba(255,255,255,0.06) 0);
+      display: grid; place-items: center;
+      position: relative;
+      margin-left: auto;
+    }
+    .score-circle::before {
+      content: ""; position: absolute; inset: 6px; border-radius: 50%;
+      background: var(--bg-2);
+    }
+    .score-circle span { position: relative; font-weight: 700; font-size: 18px; }
+    .score-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; font-size: 12.5px; }
+    .score-meta .k { color: var(--text-mute); }
+    .score-meta .v { color: var(--text); }
+    .score-rationale {
+      margin-top: 14px; padding: 12px; border-radius: 10px;
+      background: rgba(124,92,255,0.08); border: 1px solid rgba(124,92,255,0.22);
+      font-size: 12.5px; color: #d6cfff;
+    }
+    .score-rationale strong { color: #fff; }
+
+    /* Outreach visual */
+    .outreach-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .chip {
+      font-size: 11.5px; padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--line); color: var(--text-dim); cursor: pointer;
+    }
+    .chip.active { background: rgba(0,212,255,0.10); color: var(--brand-2); border-color: rgba(0,212,255,0.35); }
+    .draft-card {
+      background: var(--panel-strong); border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+      flex: 1; display: flex; flex-direction: column; gap: 10px;
+    }
+    .draft-meta { display: flex; gap: 10px; font-size: 12px; color: var(--text-dim); flex-wrap: wrap; }
+    .draft-meta b { color: var(--text); font-weight: 600; }
+    .draft-body { font-size: 13.5px; color: var(--text-dim); line-height: 1.6; min-height: 110px; }
+    .draft-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Sequences visual */
+    .seq-card { background: var(--panel-strong); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .seq-card h5 { margin: 0 0 8px; font-size: 13px; }
+
+    /* Call prep visual */
+    .brief-grid { display: grid; gap: 10px; }
+    .brief-card { background: var(--panel-strong); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+    .brief-card h6 { margin: 0 0 6px; font-size: 12px; color: var(--text-mute); text-transform: uppercase; letter-spacing: .06em; }
+    .brief-card ul { margin: 0; padding-left: 16px; }
+    .brief-card li { font-size: 13px; color: var(--text-dim); margin: 4px 0; }
+
+    /* Pipeline visual */
+    .stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    @media (max-width: 600px) { .stages { grid-template-columns: repeat(2, 1fr); } }
+    .stage {
+      background: var(--panel-strong); border: 1px solid var(--line); border-radius: 10px; padding: 10px;
+    }
+    .stage h6 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mute); display: flex; justify-content: space-between; }
+    .stage h6 b { color: var(--text); }
+    .deal {
+      font-size: 12px; padding: 8px; border-radius: 8px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--line);
+      margin-top: 6px;
+    }
+    .deal .name { font-weight: 600; }
+    .deal .meta { color: var(--text-mute); margin-top: 2px; font-size: 11.5px; }
+
+    /* ---------- AI layer ---------- */
+    .ai-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center;
+    }
+    @media (max-width: 980px) { .ai-grid { grid-template-columns: 1fr; } }
+    .ai-features { display: grid; gap: 12px; margin-top: 18px; }
+    .ai-feature {
+      padding: 14px 16px; border-radius: 12px;
+      background: var(--panel); border: 1px solid var(--line);
+      display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: flex-start;
+    }
+    .ai-feature .ico {
+      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+      background: rgba(124,92,255,0.16); color: #c8bdff;
+    }
+    .ai-feature h5 { margin: 0 0 2px; font-size: 14.5px; }
+    .ai-feature p { margin: 0; color: var(--text-dim); font-size: 13px; }
+
+    .ai-card {
+      border-radius: var(--radius-lg); padding: 22px;
+      background: linear-gradient(180deg, rgba(24,28,46,0.9), rgba(14,16,28,0.9));
+      border: 1px solid var(--line-strong); box-shadow: var(--shadow-lg);
+    }
+    html[data-theme="light"] .ai-card { background: #fff; }
+    .ai-card .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; font-size: 12.5px; color: var(--text-mute); }
+    .ai-cost { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+    .ai-cost .stat {
+      padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: 10px;
+    }
+    .ai-cost .num { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+    .ai-cost .lab { font-size: 11.5px; color: var(--text-mute); margin-top: 2px; }
+    .spark { height: 60px; margin-top: 14px; }
+    .spark path.fill { fill: url(#sparkGrad); opacity: .85; }
+    .spark path.stroke { stroke: url(#sparkGrad2); fill: none; stroke-width: 2; }
+
+    /* ---------- Industry toggle ---------- */
+    .ind-toggle-wrap { display: flex; flex-direction: column; gap: 22px; }
+    .ind-tabs {
+      display: inline-flex; gap: 4px; padding: 6px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel);
+      align-self: center; flex-wrap: wrap; justify-content: center;
+    }
+    .ind-tab {
+      padding: 10px 18px; border-radius: 999px; font-size: 13.5px; font-weight: 500;
+      color: var(--text-dim); background: transparent; border: none;
+    }
+    .ind-tab[aria-selected="true"] {
+      background: var(--grad-brand); color: #fff;
+      box-shadow: 0 8px 24px -10px rgba(124,92,255,0.6);
+    }
+    .ind-content {
+      border-radius: var(--radius-xl); padding: 28px;
+      background: var(--panel-strong); border: 1px solid var(--line-strong);
+      box-shadow: var(--shadow-md);
+    }
+    .ind-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    @media (max-width: 880px) { .ind-grid { grid-template-columns: 1fr; } }
+    .ind-block h5 {
+      font-size: 11.5px; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--text-mute); margin: 0 0 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .ind-block h5::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-2); }
+    .ind-block p { margin: 0; color: var(--text); font-size: 15px; line-height: 1.55; }
+
+    /* ---------- Industry cards ---------- */
+    .ind-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    @media (max-width: 980px) { .ind-cards { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .ind-cards { grid-template-columns: 1fr; } }
+    .ind-card {
+      padding: 22px; border-radius: var(--radius-md);
+      background: var(--panel); border: 1px solid var(--line);
+      transition: all .3s var(--ease); position: relative; overflow: hidden;
+    }
+    .ind-card:hover { transform: translateY(-3px); border-color: rgba(0,212,255,0.30); box-shadow: var(--shadow-md); }
+    .ind-card .head {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .ind-card .head .ico {
+      width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+      background: linear-gradient(135deg, rgba(0,212,255,0.20), rgba(124,92,255,0.20));
+      color: #cfe7ff; border: 1px solid rgba(0,212,255,0.25);
+    }
+    .ind-card h4 { margin: 0; font-size: 16px; }
+    .ind-card .kv { display: grid; grid-template-columns: 100px 1fr; gap: 6px 12px; font-size: 13px; }
+    .ind-card .k { color: var(--text-mute); }
+    .ind-card .v { color: var(--text-dim); }
+
+    /* ---------- Integrations ---------- */
+    .integ-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    }
+    @media (max-width: 900px) { .integ-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 540px) { .integ-grid { grid-template-columns: repeat(2, 1fr); } }
+    .integ {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; border-radius: 12px;
+      background: var(--panel); border: 1px solid var(--line);
+      transition: all .25s var(--ease);
+    }
+    .integ:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+    .integ .logo {
+      width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+      font-size: 11px; font-weight: 800; color: #fff;
+    }
+    .integ .name { font-size: 13.5px; font-weight: 500; }
+    .integ .sub { font-size: 11.5px; color: var(--text-mute); }
+    .lg-hub { background: linear-gradient(135deg,#ff7a59,#ffb454); }
+    .lg-sf { background: linear-gradient(135deg,#00a1e0,#1798c1); }
+    .lg-sp { background: linear-gradient(135deg,#0078d4,#106ebe); }
+    .lg-sg { background: linear-gradient(135deg,#0c8ce9,#1a82e2); }
+    .lg-fb { background: linear-gradient(135deg,#ffa000,#ff6f00); }
+    .lg-an { background: linear-gradient(135deg,#cc785c,#d4a27f); }
+    .lg-pg { background: linear-gradient(135deg,#336791,#4a8bb9); }
+    .lg-rd { background: linear-gradient(135deg,#a31515,#d82c20); }
+    .lg-api{ background: linear-gradient(135deg,#7c5cff,#00d4ff); }
+
+    /* ---------- Security & Admin ---------- */
+    .sec-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    }
+    @media (max-width: 1080px) { .sec-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .sec-grid { grid-template-columns: 1fr; } }
+    .sec-item {
+      padding: 18px; border-radius: var(--radius-md);
+      background: var(--panel); border: 1px solid var(--line);
+      display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: flex-start;
+    }
+    .sec-item .ico {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(56,224,164,0.12); color: var(--success);
+      display: grid; place-items: center; border: 1px solid rgba(56,224,164,0.25);
+    }
+    .sec-item h5 { margin: 0 0 4px; font-size: 14.5px; }
+    .sec-item p { margin: 0; color: var(--text-dim); font-size: 13px; }
+
+    /* ---------- Pricing ---------- */
+    .price-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    @media (max-width: 980px) { .price-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; } }
+    .price {
+      padding: 28px; border-radius: var(--radius-lg);
+      background: var(--panel); border: 1px solid var(--line);
+      display: flex; flex-direction: column;
+      transition: all .3s var(--ease);
+      position: relative;
+    }
+    .price:hover { transform: translateY(-4px); border-color: var(--line-strong); }
+    .price.pro {
+      background: linear-gradient(180deg, rgba(124,92,255,0.10), rgba(0,212,255,0.04));
+      border-color: rgba(124,92,255,0.4);
+      box-shadow: 0 24px 70px -30px rgba(124,92,255,0.55);
+    }
+    .price-tag {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--grad-brand); color: #fff; padding: 6px 12px; border-radius: 999px;
+      font-size: 11.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .price h3 { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
+    .price .desc { color: var(--text-dim); font-size: 13.5px; margin: 6px 0 16px; }
+    .price .num {
+      font-size: 44px; font-weight: 700; letter-spacing: -0.025em; line-height: 1;
+      background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .price .num small { font-size: 14px; font-weight: 500; color: var(--text-mute); margin-left: 6px; }
+    .price ul { list-style: none; padding: 0; margin: 22px 0; display: grid; gap: 10px; flex: 1; }
+    .price li { font-size: 13.5px; color: var(--text-dim); display: flex; gap: 10px; align-items: flex-start; }
+    .price li::before {
+      content: "✓"; flex: 0 0 16px; width: 16px; height: 16px; margin-top: 2px;
+      border-radius: 50%; background: rgba(56,224,164,0.16); color: var(--success);
+      display: grid; place-items: center; font-size: 10px; font-weight: 800;
+    }
+    .price .btn { width: 100%; }
+
+    /* ---------- Final CTA ---------- */
+    .final-cta {
+      position: relative; overflow: hidden;
+      border-radius: var(--radius-xl);
+      padding: 64px 40px; text-align: center;
+      background: linear-gradient(135deg, rgba(124,92,255,0.18), rgba(0,212,255,0.10));
+      border: 1px solid rgba(124,92,255,0.30);
+      box-shadow: var(--shadow-lg);
+    }
+    .final-cta::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(600px 300px at 20% 0%, rgba(124,92,255,0.30), transparent 60%),
+        radial-gradient(500px 300px at 90% 100%, rgba(0,212,255,0.25), transparent 60%);
+    }
+    .final-cta h2 {
+      position: relative; font-size: clamp(30px, 4.5vw, 52px); font-weight: 700; letter-spacing: -0.025em;
+      margin: 0 0 14px;
+      background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .final-cta p { position: relative; color: var(--text-dim); font-size: 17px; max-width: 620px; margin: 0 auto 26px; }
+    .final-cta .btn { position: relative; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      padding: 60px 0 32px; border-top: 1px solid var(--line); margin-top: 60px;
+    }
+    .foot {
+      display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 32px;
+    }
+    @media (max-width: 880px) { .foot { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 540px) { .foot { grid-template-columns: 1fr; } }
+    .foot h6 { margin: 0 0 14px; font-size: 12px; color: var(--text-mute); text-transform: uppercase; letter-spacing: .08em; }
+    .foot a { display: block; padding: 6px 0; color: var(--text-dim); font-size: 14px; }
+    .foot a:hover { color: var(--text); }
+    .foot p { margin: 12px 0 0; color: var(--text-mute); font-size: 13px; max-width: 320px; }
+    .foot-bottom {
+      margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+      color: var(--text-mute); font-size: 13px;
+    }
+
+    /* ---------- Reveal animations ---------- */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* ---------- Scrollbar (subtle) ---------- */
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+  </style>
+</head>
+<body>
+
+  <!-- Background layers -->
+  <div class="bg-field" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <!-- ========== NAV ========== -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">K</span>
+        <span class="brand-name">Klozr</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#platform">Platform</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#industries">Industries</a>
+        <a href="#integrations">Integrations</a>
+        <a href="#security">Security</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+          <svg id="iconMoon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a class="btn btn-ghost" href="#demo">Sign in</a>
+        <a class="btn btn-primary" href="#demo">Request Demo <span class="arrow">→</span></a>
+        <button class="icon-btn nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <a href="#platform">Platform</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#industries">Industries</a>
+    <a href="#integrations">Integrations</a>
+    <a href="#security">Security</a>
+    <a href="#pricing">Pricing</a>
+    <a class="btn btn-primary" href="#demo">Request Demo</a>
+  </div>
+
+  <main id="top">
+
+    <!-- ========== HERO ========== -->
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="eyebrow"><span class="dot"></span> Autonomous Sales Execution Layer</span>
+          <h1>Turn Sales Data Into <span class="grad">Closed Revenue.</span></h1>
+          <p class="lead">
+            Klozr is the AI Sales Engine that scores your best prospects, writes personalized outreach, guides follow-up, and helps your team close faster — with humans in the loop at every step.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary btn-lg" href="#demo">Request Demo <span class="arrow">→</span></a>
+            <a class="btn btn-lg" href="#workflow">See Workflow</a>
+          </div>
+          <div class="hero-trust" aria-label="Highlights">
+            <div class="item"><span class="check">✓</span> SOC 2-aligned controls</div>
+            <div class="item"><span class="check">✓</span> Human-approved outbound</div>
+            <div class="item"><span class="check">✓</span> CRM-native sync</div>
+            <div class="item"><span class="check">✓</span> Bring-your-own model</div>
+          </div>
+        </div>
+
+        <!-- Hero dashboard mockup -->
+        <div class="reveal" style="position: relative;">
+          <div class="float-chip chip-a"><span class="glow" style="background:#38e0a4;box-shadow:0 0 10px #38e0a4;"></span> 137 Tier-A leads ready</div>
+          <div class="float-chip chip-b"><span class="glow" style="background:#00d4ff;box-shadow:0 0 10px #00d4ff;"></span> Reply detected — paused</div>
+          <div class="float-chip chip-c"><span class="glow" style="background:#7c5cff;box-shadow:0 0 10px #7c5cff;"></span> Brief generated for 10:30 call</div>
+
+          <div class="mockup" id="heroMockup">
+            <div class="mockup-bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span class="url">app.klozr.com / workspace / acme-revops</span>
+            </div>
+            <div class="mockup-grid">
+              <!-- Score panel -->
+              <div class="panel panel-score">
+                <div class="panel-title"><h4>Top-scored prospects</h4><span class="live">Live</span></div>
+                <div class="score-row">
+                  <div class="avatar a1">DM</div>
+                  <div>
+                    <div class="lead-name">Dana Morales</div>
+                    <div class="lead-meta">VP Sales · Northwind Capital · $42M ARR</div>
+                  </div>
+                  <span class="tier A">Tier A · 92</span>
+                </div>
+                <div class="score-row">
+                  <div class="avatar a2">RP</div>
+                  <div>
+                    <div class="lead-name">Ravi Patel</div>
+                    <div class="lead-meta">Director RevOps · Helix Manufacturing</div>
+                  </div>
+                  <span class="tier A">Tier A · 88</span>
+                </div>
+                <div class="score-row">
+                  <div class="avatar a3">SK</div>
+                  <div>
+                    <div class="lead-name">Sara Keller</div>
+                    <div class="lead-meta">CRO · Bridgepoint SaaS</div>
+                  </div>
+                  <span class="tier B">Tier B · 74</span>
+                </div>
+              </div>
+
+              <!-- Email panel -->
+              <div class="panel panel-email">
+                <div class="panel-title"><h4>Generated outreach · awaiting approval</h4><span class="live">AI</span></div>
+                <div class="email-meta">
+                  <div class="row"><span class="label">To</span><span class="val">dana.morales@northwind.com</span></div>
+                  <div class="row"><span class="label">Subj</span><span class="val">Two ideas for Q3 ramp at Northwind</span></div>
+                </div>
+                <div class="email-body" id="heroEmail"></div>
+                <div class="email-actions">
+                  <button class="pill primary">Approve &amp; send</button>
+                  <button class="pill">Edit</button>
+                  <button class="pill danger">Reject</button>
+                </div>
+              </div>
+
+              <!-- Sequence panel -->
+              <div class="panel panel-seq">
+                <div class="panel-title"><h4>Sequence · "Q3 Ramp · Mid-Market"</h4><span class="live">Active</span></div>
+                <div class="seq-step">
+                  <div class="seq-icon done">✓</div>
+                  <div><div class="seq-name">Step 1 · Intro email</div><div class="seq-meta">Sent · opened 2x</div></div>
+                  <div class="seq-time">2d ago</div>
+                </div>
+                <div class="seq-step">
+                  <div class="seq-icon now">●</div>
+                  <div><div class="seq-name">Step 2 · Value follow-up</div><div class="seq-meta">Scheduled · reply detection on</div></div>
+                  <div class="seq-time">in 3h</div>
+                </div>
+                <div class="seq-step">
+                  <div class="seq-icon todo">3</div>
+                  <div><div class="seq-name">Step 3 · Call task</div><div class="seq-meta">Auto-creates task for owner</div></div>
+                  <div class="seq-time">+2d</div>
+                </div>
+              </div>
+
+              <!-- Pipeline panel -->
+              <div class="panel panel-pipe">
+                <div class="panel-title"><h4>Pipeline · this quarter</h4><span class="live">$8.4M</span></div>
+                <div class="pipe-bars">
+                  <div class="pipe-row"><div class="label">Discovery</div><div class="bar"><i style="width: 78%; animation-delay:.1s;"></i></div><div class="val">$2.1M</div></div>
+                  <div class="pipe-row"><div class="label">Evaluation</div><div class="bar"><i style="width: 62%; animation-delay:.25s;"></i></div><div class="val">$1.8M</div></div>
+                  <div class="pipe-row"><div class="label">Proposal</div><div class="bar"><i style="width: 84%; animation-delay:.4s;"></i></div><div class="val">$2.6M</div></div>
+                  <div class="pipe-row"><div class="label">Commit</div><div class="bar"><i style="width: 46%; animation-delay:.55s;"></i></div><div class="val">$1.9M</div></div>
+                </div>
+              </div>
+
+              <!-- Intel panel -->
+              <div class="panel panel-intel">
+                <div class="panel-title"><h4>Contact intelligence</h4><span class="live">Synced</span></div>
+                <div class="intel-list">
+                  <div class="intel-item"><span class="ico">★</span><span><b style="color:var(--text)">Strong fit</b> — industry, revenue band, and historical conversion match Tier A profile.</span></div>
+                  <div class="intel-item"><span class="ico">↗</span><span>Recent funding round + 14% headcount growth in revenue org.</span></div>
+                  <div class="intel-item"><span class="ico">⌘</span><span>Engaged with pricing page twice in last 7 days.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== KPI STRIP ========== -->
+    <section class="kpi" aria-label="Key metrics">
+      <div class="container">
+        <div class="kpi-grid">
+          <div class="kpi-item reveal">
+            <div class="kpi-num"><span class="counter" data-target="10000" data-suffix="+">0</span></div>
+            <div class="kpi-label">Contacts scored across pilots</div>
+          </div>
+          <div class="kpi-item reveal">
+            <div class="kpi-num"><span class="counter" data-target="5" data-suffix="x">0</span></div>
+            <div class="kpi-label">Faster prioritization</div>
+          </div>
+          <div class="kpi-item reveal">
+            <div class="kpi-num"><span class="counter" data-target="40" data-suffix="%">0</span></div>
+            <div class="kpi-label">Less manual research</div>
+          </div>
+          <div class="kpi-item reveal">
+            <div class="kpi-num"><span class="counter" data-target="24" data-suffix="/7">0</span></div>
+            <div class="kpi-label">AI-assisted execution</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PROBLEM ========== -->
+    <section id="problem">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><span class="dot"></span> The execution gap</span>
+          <h2 class="section-title">Your sales team does not need more data.<br/>It needs direction.</h2>
+          <p class="section-sub">Most revenue orgs already sit on more contacts, signals, and tools than they can use. The gap is execution — knowing who to call first, what to say, and what to do next, every day, across every rep.</p>
+        </div>
+
+        <div class="problem-grid">
+          <div class="problem-card reveal"><div class="x">!</div><h4>Prospect lists are messy</h4><p>Duplicates, stale titles, and missing fields make even good lists unusable.</p></div>
+          <div class="problem-card reveal"><div class="x">!</div><h4>Reps don't know who to call first</h4><p>Without scoring, every contact looks equal — so reps default to the loudest, not the best.</p></div>
+          <div class="problem-card reveal"><div class="x">!</div><h4>CRM data is incomplete</h4><p>Half the fields rep care about are blank, and managers can't trust the dashboard.</p></div>
+          <div class="problem-card reveal"><div class="x">!</div><h4>Outreach is generic</h4><p>Templates feel like templates. Open rates fall and reply rates flatline.</p></div>
+          <div class="problem-card reveal"><div class="x">!</div><h4>Follow-up is inconsistent</h4><p>Pipeline leaks at step 2. Reps forget. Sequences stall. Replies go unread.</p></div>
+          <div class="problem-card reveal"><div class="x">!</div><h4>AI spend is opaque</h4><p>Tools fire off tokens with no visibility into cost, ownership, or business impact.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PLATFORM CAPABILITIES ========== -->
+    <section id="platform">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow"><span class="dot"></span> Platform</span>
+          <h2 class="section-title">An execution layer, not another point tool.</h2>
+          <p class="section-sub">Klozr sits between your data sources, your reps, your AI models, and your CRM — turning every step of the sales motion into prioritized, measurable revenue action.</p>
+        </div>
+
+        <div class="cap-grid">
+          <!-- 12 capability cards -->
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></div>
+            <h4>Contact Intelligence</h4>
+            <p>Unified, enriched profiles for every contact and account in your pipeline.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l5 5L21 4"/></svg></div>
+            <h4>AI Lead Scoring</h4>
+            <p>Tier A/B/C scoring with explainable rationale, tuned to your conversion patterns.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H5l-1 4z"/></svg></div>
+            <h4>Personalized Email Generation</h4>
+            <p>Drafts grounded in real signals — funding, hiring, product usage, role context.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h16"/></svg></div>
+            <h4>Brand Voice Templates</h4>
+            <p>Lock tone, structure, and disclaimers across reps, regions, and product lines.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div>
+            <h4>Human Approval Queue</h4>
+            <p>Nothing leaves the building without a human in the loop. Bulk approve, edit, reject.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></div>
+            <h4>Automated Sequences</h4>
+            <p>Multi-step cadences with branching, throttling, and per-rep send windows.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5a8.5 8.5 0 0 1 17 0z"/></svg></div>
+            <h4>Reply Detection</h4>
+            <p>Auto-pause sequences on real replies, OOO, or unsubscribes — keep reps trusted.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92V21a1 1 0 0 1-1.11 1A19.86 19.86 0 0 1 2 4.11 1 1 0 0 1 3 3h4.09a1 1 0 0 1 1 .75l1 4a1 1 0 0 1-.27 1L7.21 10.79a16 16 0 0 0 6 6l2.05-1.62a1 1 0 0 1 1-.27l4 1a1 1 0 0 1 .74 1z"/></svg></div>
+            <h4>Call Prep Briefs</h4>
+            <p>Talking points, objections, and next-best actions generated before every meeting.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></div>
+            <h4>Deal &amp; Case Tracking</h4>
+            <p>Stages, values, owners, and AI-flagged risk on every open opportunity.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v6H4zM4 14h16v6H4z"/></svg></div>
+            <h4>CRM Sync</h4>
+            <p>Two-way sync with HubSpot, Salesforce, and your system of record — no migration.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg></div>
+            <h4>Multi-Tenant Workspaces</h4>
+            <p>Isolated tenants for portfolio companies, brokerages, BUs, and regions.</p>
+          </div>
+          <div class="cap-card reveal">
+            <div class="cap-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <h4>AI Cost Attribution</h4>
+            <p>Token-level visibility per workspace, model, and campaign — no surprise bills.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== WORKFLOW ========== -->
+    <section id="workflow">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow"><span class="dot"></span> Workflow</span>
+          <h2 class="section-title">From messy data to close-ready pipeline.</h2>
+          <p class="section-sub">Ten steps, one system. Every interaction is logged, attributed, and human-approved before it touches a customer.</p>
+        </div>
+
+        <div class="flow">
+          <div class="flow-step reveal"><span class="num">01</span><div class="ico">↧</div><h4>Import</h4><p>Pull contacts from CRM, CSVs, SharePoint, and operational systems.</p></div>
+          <div class="flow-step reveal"><span class="num">02</span><div class="ico">≡</div><h4>Normalize</h4><p>Dedupe, enrich, and standardize fields across every source.</p></div>
+          <div class="flow-step reveal"><span class="num">03</span><div class="ico">★</div><h4>Score</h4><p>Tier each contact with explainable AI rationale.</p></div>
+          <div class="flow-step reveal"><span class="num">04</span><div class="ico">↑</div><h4>Prioritize</h4><p>Surface today's call list, top accounts, and ICP fit.</p></div>
+          <div class="flow-step reveal"><span class="num">05</span><div class="ico">✎</div><h4>Generate</h4><p>Draft personalized outreach grounded in real signals.</p></div>
+          <div class="flow-step reveal"><span class="num">06</span><div class="ico">✓</div><h4>Approve</h4><p>Humans review, edit, and approve drafts in bulk or one-by-one.</p></div>
+          <div class="flow-step reveal"><span class="num">07</span><div class="ico">→</div><h4>Sequence</h4><p>Multi-step cadences with reply detection and auto-pause.</p></div>
+          <div class="flow-step reveal"><span class="num">08</span><div class="ico">☎</div><h4>Engage</h4><p>Call briefs, talking points, and next-best actions for every rep.</p></div>
+          <div class="flow-step reveal"><span class="num">09</span><div class="ico">$</div><h4>Convert</h4><p>Track deals, cases, and revenue through close.</p></div>
+          <div class="flow-step reveal"><span class="num">10</span><div class="ico">⌬</div><h4>Analyze</h4><p>Attribution, cost visibility, and tuning across the whole motion.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== INTERACTIVE PRODUCT TABS ========== -->
+    <section id="product">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow"><span class="dot"></span> Live product</span>
+          <h2 class="section-title">A revenue command center, not a dashboard.</h2>
+          <p class="section-sub">Switch between scoring, outreach, sequences, call prep, and pipeline. Every surface is built for the people actually closing the deal.</p>
+        </div>
+
+        <div class="product-shell reveal">
+          <div class="tabs" role="tablist" aria-label="Product views">
+            <button class="tab" role="tab" aria-selected="true" data-tab="score">Score</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="outreach">Outreach</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="seq">Sequences</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="call">Call Prep</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="pipe">Pipeline</button>
+          </div>
+
+          <div class="tab-body">
+
+            <!-- Score tab -->
+            <div class="tab-panel active" data-panel="score">
+              <div class="tab-grid">
+                <div class="tab-copy">
+                  <h3>AI Lead Scoring with explainable rationale.</h3>
+                  <p class="lead">Every prospect gets a Tier A / B / C score backed by signals you can audit — not a black box.</p>
+                  <ul class="tab-bullets">
+                    <li>Industry fit, revenue band, geography, and historical conversion patterns.</li>
+                    <li>Engagement signals from email, calls, and product usage.</li>
+                    <li>Tunable scoring profiles per workspace, BU, or product line.</li>
+                    <li>Auto-resurface decay and re-engage stale tier-A accounts.</li>
+                  </ul>
+                </div>
+                <div class="tab-visual">
+                  <div class="score-card">
+                    <div class="score-head">
+                      <div class="who">
+                        <div class="avatar a1">DM</div>
+                        <div>
+                          <div class="lead-name">Dana Morales</div>
+                          <div class="lead-meta">VP Sales · Northwind Capital</div>
+                        </div>
+                      </div>
+                      <div class="score-circle" style="--p:92"><span>92</span></div>
+                    </div>
+                    <div class="score-meta">
+                      <div class="k">Industry fit</div><div class="v">Financial Services · Tier A</div>
+                      <div class="k">Revenue band</div><div class="v">$25M – $100M ARR</div>
+                      <div class="k">Geography</div><div class="v">North America</div>
+                      <div class="k">Past conversion</div><div class="v">3.2× ICP baseline</div>
+                    </div>
+                    <div class="score-rationale">
+                      <strong>Tier A · Strong fit.</strong> Industry, revenue, geography, and historical conversion patterns match top-converting cohort. Recent funding round + RevOps headcount growth suggest active buying window.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Outreach tab -->
+            <div class="tab-panel" data-panel="outreach">
+              <div class="tab-grid">
+                <div class="tab-copy">
+                  <h3>Personalized email, drafted in your brand voice.</h3>
+                  <p class="lead">Klozr writes the first version using real signals. Reps approve, edit, or reject — humans always control what hits the wire.</p>
+                  <ul class="tab-bullets">
+                    <li>Tone controls: executive, consultative, warm, technical.</li>
+                    <li>Context grounded in CRM, news, hiring, and intent signals.</li>
+                    <li>Brand voice templates lock structure across the team.</li>
+                    <li>One-click approve, edit, reject, or regenerate with a different angle.</li>
+                  </ul>
+                </div>
+                <div class="tab-visual">
+                  <div class="outreach-controls">
+                    <button class="chip active" data-tone="executive">Executive</button>
+                    <button class="chip" data-tone="consultative">Consultative</button>
+                    <button class="chip" data-tone="warm">Warm</button>
+                    <button class="chip" data-tone="technical">Technical</button>
+                  </div>
+                  <div class="draft-card">
+                    <div class="draft-meta">
+                      <span><b>To:</b> dana.morales@northwind.com</span>
+                      <span><b>Tone:</b> <span id="toneLabel">Executive</span></span>
+                    </div>
+                    <div class="draft-meta">
+                      <span><b>Subject:</b> <span id="emailSubj">Two ideas for Q3 ramp at Northwind</span></span>
+                    </div>
+                    <div class="draft-body" id="emailDraft"></div>
+                    <div class="draft-actions">
+                      <button class="pill primary" data-action="approve">Approve &amp; send</button>
+                      <button class="pill" data-action="regen">Regenerate</button>
+                      <button class="pill" data-action="edit">Edit</button>
+                      <button class="pill danger" data-action="reject">Reject</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sequences tab -->
+            <div class="tab-panel" data-panel="seq">
+              <div class="tab-grid">
+                <div class="tab-copy">
+                  <h3>Sequences that pause when a human replies.</h3>
+                  <p class="lead">Multi-step cadences with reply detection, throttling, and per-rep send windows — no robotic follow-ups after a real conversation starts.</p>
+                  <ul class="tab-bullets">
+                    <li>Branching by reply type: positive, OOO, unsubscribe, no-reply.</li>
+                    <li>Auto-pause on detected human reply across email and calls.</li>
+                    <li>Send-window throttling per workspace, region, or domain.</li>
+                    <li>Owner-aware task creation in CRM at every step.</li>
+                  </ul>
+                </div>
+                <div class="tab-visual">
+                  <div class="seq-card">
+                    <h5>"Q3 Ramp · Mid-Market Financial Services"</h5>
+                    <div class="seq-step">
+                      <div class="seq-icon done">✓</div>
+                      <div><div class="seq-name">Step 1 · Intro email</div><div class="seq-meta">Sent · opened 2× · clicked pricing</div></div>
+                      <div class="seq-time">2d ago</div>
+                    </div>
+                    <div class="seq-step">
+                      <div class="seq-icon now">●</div>
+                      <div><div class="seq-name">Step 2 · Value follow-up</div><div class="seq-meta">Scheduled · reply detection on</div></div>
+                      <div class="seq-time">in 3h</div>
+                    </div>
+                    <div class="seq-step">
+                      <div class="seq-icon todo">3</div>
+                      <div><div class="seq-name">Step 3 · Call task for owner</div><div class="seq-meta">Auto-creates CRM task w/ brief</div></div>
+                      <div class="seq-time">+2d</div>
+                    </div>
+                    <div class="seq-step">
+                      <div class="seq-icon todo">4</div>
+                      <div><div class="seq-name">Step 4 · Case study email</div><div class="seq-meta">Branches on Step 3 outcome</div></div>
+                      <div class="seq-time">+5d</div>
+                    </div>
+                    <div class="seq-step">
+                      <div class="seq-icon todo">5</div>
+                      <div><div class="seq-name">Step 5 · Breakup or recycle</div><div class="seq-meta">Re-tier and route to nurture</div></div>
+                      <div class="seq-time">+7d</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Call prep tab -->
+            <div class="tab-panel" data-panel="call">
+              <div class="tab-grid">
+                <div class="tab-copy">
+                  <h3>Every meeting starts ready.</h3>
+                  <p class="lead">Klozr generates a tailored brief 30 minutes before each call: talking points, likely objections, and the next-best action.</p>
+                  <ul class="tab-bullets">
+                    <li>Account context, recent activity, and stakeholder map.</li>
+                    <li>Pain hypotheses tied to their stage and industry.</li>
+                    <li>Objection responses sourced from your win library.</li>
+                    <li>Recommended next-best action with one-click execution.</li>
+                  </ul>
+                </div>
+                <div class="tab-visual">
+                  <div class="brief-grid">
+                    <div class="brief-card">
+                      <h6>Call · 10:30 AM · Dana Morales · Northwind Capital</h6>
+                      <ul>
+                        <li>Tier A · 92 score · Discovery → Evaluation</li>
+                        <li>Engaged with pricing 2× in the last 7 days</li>
+                      </ul>
+                    </div>
+                    <div class="brief-card">
+                      <h6>Talking Points</h6>
+                      <ul>
+                        <li>Q3 ramp goal: 30% lift in qualified pipeline</li>
+                        <li>Compliance posture for client-facing outreach</li>
+                        <li>Existing CRM (Salesforce) sync requirements</li>
+                      </ul>
+                    </div>
+                    <div class="brief-card">
+                      <h6>Likely Objections</h6>
+                      <ul>
+                        <li>"We already have Outreach" — pivot to scoring + brand voice</li>
+                        <li>"Compliance review will take months" — point to RBAC + audit log</li>
+                      </ul>
+                    </div>
+                    <div class="brief-card">
+                      <h6>Next-Best Action</h6>
+                      <ul>
+                        <li>Send compliance one-pager + book technical follow-up with RevOps</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pipeline tab -->
+            <div class="tab-panel" data-panel="pipe">
+              <div class="tab-grid">
+                <div class="tab-copy">
+                  <h3>Pipeline you can actually trust.</h3>
+                  <p class="lead">Cases and deals by status, value, and owner — with AI-flagged risk on every stalled opportunity.</p>
+                  <ul class="tab-bullets">
+                    <li>Stage hygiene scoring on every open deal.</li>
+                    <li>Auto-flag stalls, single-threaded accounts, and missing close plans.</li>
+                    <li>Forecast deltas attributed to specific reps and motions.</li>
+                    <li>One-click jump from a flagged deal to the next-best action.</li>
+                  </ul>
+                </div>
+                <div class="tab-visual">
+                  <div class="stages">
+                    <div class="stage">
+                      <h6>Discovery <b>$2.1M</b></h6>
+                      <div class="deal"><div class="name">Northwind Capital</div><div class="meta">$420K · Dana M.</div></div>
+                      <div class="deal"><div class="name">Helix Manufacturing</div><div class="meta">$280K · Ravi P.</div></div>
+                    </div>
+                    <div class="stage">
+                      <h6>Evaluation <b>$1.8M</b></h6>
+                      <div class="deal"><div class="name">Bridgepoint SaaS</div><div class="meta">$520K · Sara K.</div></div>
+                      <div class="deal"><div class="name">Acuity Health</div><div class="meta">$310K · Marc L.</div></div>
+                    </div>
+                    <div class="stage">
+                      <h6>Proposal <b>$2.6M</b></h6>
+                      <div class="deal"><div class="name">Crestline PE Co.</div><div class="meta">$880K · Dana M.</div></div>
+                      <div class="deal"><div class="name">Vertex Logistics</div><div class="meta">$640K · Tomi A.</div></div>
+                    </div>
+                    <div class="stage">
+                      <h6>Commit <b>$1.9M</b></h6>
+                      <div class="deal"><div class="name">Fairmount Wealth</div><div class="meta">$720K · Sara K.</div></div>
+                      <div class="deal"><div class="name">Orion Steel</div><div class="meta">$510K · Ravi P.</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== AI LAYER ========== -->
+    <section id="ai">
+      <div class="container">
+        <div class="ai-grid">
+          <div class="reveal">
+            <span class="eyebrow"><span class="dot"></span> AI Layer</span>
+            <h2 class="section-title">AI that explains, drafts, prepares, and learns.</h2>
+            <p class="section-sub">Klozr uses AI where it earns its keep — and gets out of the way everywhere else. Every output is grounded, attributed, and reviewable by a human.</p>
+
+            <div class="ai-features">
+              <div class="ai-feature">
+                <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
+                <div><h5>Scoring rationale</h5><p>Every Tier A/B/C score includes the signals that produced it. No black box.</p></div>
+              </div>
+              <div class="ai-feature">
+                <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H5l-1 4z"/></svg></div>
+                <div><h5>Personalized outreach</h5><p>Drafts grounded in funding, hiring, product usage, and stakeholder context.</p></div>
+              </div>
+              <div class="ai-feature">
+                <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h16"/></svg></div>
+                <div><h5>Brand voice control</h5><p>Templates lock tone, structure, and disclaimers per region or product line.</p></div>
+              </div>
+              <div class="ai-feature">
+                <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h6M7 16h10"/></svg></div>
+                <div><h5>Call briefs &amp; templates</h5><p>Reusable briefs, talking points, and follow-up templates per industry.</p></div>
+              </div>
+              <div class="ai-feature">
+                <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+                <div><h5>Cost visibility</h5><p>Token, model, and campaign-level cost attribution by workspace.</p></div>
+              </div>
+              <div class="ai-feature">
+                <div class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 6 1-4.5 4 1 6L12 16l-5.5 3 1-6L3 9l6-1z"/></svg></div>
+                <div><h5>Bring-your-own model</h5><p>Use Claude, OpenAI, Azure OpenAI, or your own — your keys, your control.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI cost / activity card -->
+          <div class="ai-card reveal">
+            <div class="row"><span>AI activity · this week</span><span style="color:var(--success)">▲ on track</span></div>
+            <div class="ai-cost">
+              <div class="stat"><div class="num" data-counter-num data-target="218400">0</div><div class="lab">Tokens used</div></div>
+              <div class="stat"><div class="num">$<span data-counter-num data-target="184">0</span></div><div class="lab">Spend (USD)</div></div>
+              <div class="stat"><div class="num"><span data-counter-num data-target="312">0</span></div><div class="lab">Drafts approved</div></div>
+            </div>
+            <svg class="spark" viewBox="0 0 320 60" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="sparkGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="#7c5cff" stop-opacity="0.55"/>
+                  <stop offset="1" stop-color="#7c5cff" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="sparkGrad2" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color="#7c5cff"/>
+                  <stop offset="1" stop-color="#00d4ff"/>
+                </linearGradient>
+              </defs>
+              <path class="fill" d="M0,50 L20,40 L40,44 L60,30 L80,34 L100,22 L120,28 L140,18 L160,24 L180,12 L200,18 L220,8 L240,14 L260,6 L280,12 L300,4 L320,10 L320,60 L0,60 Z"/>
+              <path class="stroke" d="M0,50 L20,40 L40,44 L60,30 L80,34 L100,22 L120,28 L140,18 L160,24 L180,12 L200,18 L220,8 L240,14 L260,6 L280,12 L300,4 L320,10"/>
+            </svg>
+            <div class="row" style="margin-top:14px;">
+              <span>Model: Claude Sonnet · BYO key</span>
+              <span>Workspace: Acme RevOps</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== INDUSTRY TOGGLE ========== -->
+    <section id="industries">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow"><span class="dot"></span> Industries</span>
+          <h2 class="section-title">Built for any team with a list and a quota.</h2>
+          <p class="section-sub">Klozr adapts to your industry's data shape, compliance posture, and sales motion — without custom code.</p>
+        </div>
+
+        <div class="ind-toggle-wrap reveal">
+          <div class="ind-tabs" role="tablist" aria-label="Industries">
+            <button class="ind-tab" role="tab" aria-selected="true" data-ind="fs">Financial Services</button>
+            <button class="ind-tab" role="tab" aria-selected="false" data-ind="saas">SaaS</button>
+            <button class="ind-tab" role="tab" aria-selected="false" data-ind="mfg">Manufacturing</button>
+            <button class="ind-tab" role="tab" aria-selected="false" data-ind="pe">PE Portfolio</button>
+          </div>
+
+          <div class="ind-content" id="indContent">
+            <div class="ind-grid">
+              <div class="ind-block">
+                <h5>The problem</h5>
+                <p id="indProblem">Advisors and brokers sit on thousands of cold contacts with stale titles, mismatched households, and unclear compliance status — and no consistent way to prioritize who to call.</p>
+              </div>
+              <div class="ind-block">
+                <h5>How Klozr helps</h5>
+                <p id="indHelp">Klozr normalizes contact data, enforces brand-and-compliance voice on every draft, scores prospects against your historical book, and routes only approved outreach.</p>
+              </div>
+              <div class="ind-block">
+                <h5>Revenue outcome</h5>
+                <p id="indOutcome">More qualified meetings per advisor, less time on list cleanup, and a defensible audit trail for every outbound communication.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Industry cards -->
+        <div class="ind-cards" style="margin-top: 56px;">
+          <div class="ind-card reveal">
+            <div class="head"><div class="ico">$</div><h4>Financial Services</h4></div>
+            <div class="kv">
+              <div class="k">Data problem</div><div class="v">Stale titles, household duplicates, compliance gaps.</div>
+              <div class="k">Klozr helps</div><div class="v">Compliance-aware voice, audit-friendly logs, advisor scoring.</div>
+              <div class="k">Outcome</div><div class="v">More qualified advisor meetings; defensible outreach.</div>
+            </div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="head"><div class="ico">⌘</div><h4>SaaS</h4></div>
+            <div class="kv">
+              <div class="k">Data problem</div><div class="v">Free-tier noise, shallow CRM, weak intent signal use.</div>
+              <div class="k">Klozr helps</div><div class="v">PQL scoring, intent-grounded outreach, BYO model + cost caps.</div>
+              <div class="k">Outcome</div><div class="v">Higher PQL → SQL conversion, faster expansion motion.</div>
+            </div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="head"><div class="ico">⚙</div><h4>Manufacturing</h4></div>
+            <div class="kv">
+              <div class="k">Data problem</div><div class="v">Distributor lists in spreadsheets, long buying cycles.</div>
+              <div class="k">Klozr helps</div><div class="v">Account-based prioritization, structured re-engagement cadences.</div>
+              <div class="k">Outcome</div><div class="v">Reps focused on accounts that actually move the quarter.</div>
+            </div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="head"><div class="ico">+</div><h4>Healthcare</h4></div>
+            <div class="kv">
+              <div class="k">Data problem</div><div class="v">Fragmented systems, strict outbound compliance.</div>
+              <div class="k">Klozr helps</div><div class="v">Role-based access, approval queues, brand-locked templates.</div>
+              <div class="k">Outcome</div><div class="v">Defensible outreach across systems and clinical sites.</div>
+            </div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="head"><div class="ico">⌥</div><h4>Professional Services</h4></div>
+            <div class="kv">
+              <div class="k">Data problem</div><div class="v">Partner-led pipelines, inconsistent CRM hygiene.</div>
+              <div class="k">Klozr helps</div><div class="v">Per-partner workspaces, brief generation, light-weight tracking.</div>
+              <div class="k">Outcome</div><div class="v">Partners spend their time on relationships, not data entry.</div>
+            </div>
+          </div>
+          <div class="ind-card reveal">
+            <div class="head"><div class="ico">▲</div><h4>Private Equity</h4></div>
+            <div class="kv">
+              <div class="k">Data problem</div><div class="v">Portfolio companies with mismatched stacks and motions.</div>
+              <div class="k">Klozr helps</div><div class="v">Multi-tenant rollout, shared scoring profiles, central reporting.</div>
+              <div class="k">Outcome</div><div class="v">Faster value creation across every portco's revenue org.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== INTEGRATIONS ========== -->
+    <section id="integrations">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow"><span class="dot"></span> Integrations</span>
+          <h2 class="section-title">Connects to the systems you already run on.</h2>
+          <p class="section-sub">No rip-and-replace. Klozr plugs into your CRM, your data sources, and your model of choice.</p>
+        </div>
+        <div class="integ-grid reveal">
+          <div class="integ"><div class="logo lg-hub">H</div><div><div class="name">HubSpot</div><div class="sub">Two-way sync</div></div></div>
+          <div class="integ"><div class="logo lg-sf">SF</div><div><div class="name">Salesforce</div><div class="sub">Two-way sync</div></div></div>
+          <div class="integ"><div class="logo lg-sp">SP</div><div><div class="name">SharePoint</div><div class="sub">Document sources</div></div></div>
+          <div class="integ"><div class="logo lg-sg">SG</div><div><div class="name">SendGrid</div><div class="sub">Verified domains</div></div></div>
+          <div class="integ"><div class="logo lg-fb">FB</div><div><div class="name">Firebase</div><div class="sub">Auth &amp; tenant infra</div></div></div>
+          <div class="integ"><div class="logo lg-an">AC</div><div><div class="name">Anthropic Claude</div><div class="sub">Model provider</div></div></div>
+          <div class="integ"><div class="logo lg-pg">PG</div><div><div class="name">Postgres</div><div class="sub">System of record</div></div></div>
+          <div class="integ"><div class="logo lg-rd">R</div><div><div class="name">Redis</div><div class="sub">Queues &amp; cache</div></div></div>
+          <div class="integ"><div class="logo lg-api">{ }</div><div><div class="name">Custom APIs</div><div class="sub">Any system, any direction</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== SECURITY ========== -->
+    <section id="security">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><span class="dot"></span> Enterprise readiness</span>
+          <h2 class="section-title">Designed for security, compliance, and scale.</h2>
+          <p class="section-sub">Klozr was built from day one for regulated industries, multi-entity rollouts, and audit-friendly outbound.</p>
+        </div>
+        <div class="sec-grid">
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-4 9-8 10-4-1-8-5-8-10V6z"/></svg></div><div><h5>Role-based access</h5><p>Granular permissions across reps, managers, admins, and external collaborators.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg></div><div><h5>Tenant isolation</h5><p>Per-tenant workspaces with isolated data, keys, and AI cost ledgers.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg></div><div><h5>Verified sending domains</h5><p>SPF, DKIM, and DMARC management built into every workspace.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div><div><h5>Workspace controls</h5><p>Per-tenant settings: brand voice, throttles, model choice, cost caps.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div><div><h5>Audit-friendly logging</h5><p>Every draft, approval, edit, and send is logged with actor and reason.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg></div><div><h5>Human approval before send</h5><p>Default-on approval queue. Nothing leaves the building without a human.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 12l9 4 9-4"/></svg></div><div><h5>Data provenance</h5><p>Trace every contact, signal, and AI output back to its source system.</p></div></div>
+          <div class="sec-item reveal"><div class="ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><h5>Cost tracking</h5><p>Token, model, and campaign-level cost visibility — set caps and alerts.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ADMIN / OPERATIONS ========== -->
+    <section id="admin">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow"><span class="dot"></span> Admin &amp; Operations</span>
+          <h2 class="section-title">Run a sales platform, not a stack of tabs.</h2>
+          <p class="section-sub">Operators get a single console for tenants, members, scoring profiles, data sources, AI usage, and analytics.</p>
+        </div>
+        <div class="cap-grid">
+          <div class="cap-card reveal"><div class="cap-icon">⌂</div><h4>Tenant management</h4><p>Spin up isolated workspaces for portcos, BUs, brokerages, or regions in minutes.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">⚐</div><h4>Member roles</h4><p>Reps, managers, admins, and external collaborators with scoped permissions.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">★</div><h4>Scoring profiles</h4><p>Tune scoring per workspace, product line, or motion — without code changes.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">⇡</div><h4>Data sources</h4><p>Plug in CRM, CSVs, SharePoint, and custom APIs as governed sources.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">∑</div><h4>API usage dashboard</h4><p>Tokens, spend, and approval throughput per workspace and per model.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">◎</div><h4>Campaign analytics</h4><p>Reply rates, meetings, pipeline, and revenue attributed end-to-end.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">⚒</div><h4>Workspace configuration</h4><p>Brand voice, throttles, send windows, and approval policies per tenant.</p></div>
+          <div class="cap-card reveal"><div class="cap-icon">⤓</div><h4>Export &amp; reporting</h4><p>Scheduled CSV / API exports for finance, ops, and audit reviews.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRICING ========== -->
+    <section id="pricing">
+      <div class="container">
+        <div class="section-head center reveal">
+          <span class="eyebrow"><span class="dot"></span> Pricing</span>
+          <h2 class="section-title">Built for teams ready to operationalize outreach.</h2>
+          <p class="section-sub">Transparent tiers. Bring your own model keys. No surprise AI bills.</p>
+        </div>
+
+        <div class="price-grid">
+          <div class="price reveal">
+            <h3>Starter</h3>
+            <p class="desc">For early sales teams ready to prioritize and personalize.</p>
+            <div class="num">$2,400<small>/mo</small></div>
+            <ul>
+              <li>Up to 5 seats</li>
+              <li>1 workspace</li>
+              <li>AI scoring + draft generation</li>
+              <li>HubSpot or Salesforce sync</li>
+              <li>Standard approval queue</li>
+              <li>BYO model key</li>
+            </ul>
+            <a class="btn" href="#demo">Talk to sales</a>
+          </div>
+
+          <div class="price pro reveal">
+            <span class="price-tag">Most popular</span>
+            <h3>Growth</h3>
+            <p class="desc">For revenue orgs scaling guided selling across the team.</p>
+            <div class="num">$7,500<small>/mo</small></div>
+            <ul>
+              <li>Up to 25 seats</li>
+              <li>3 workspaces</li>
+              <li>Advanced scoring profiles</li>
+              <li>Sequences with reply detection</li>
+              <li>Call prep briefs &amp; pipeline risk</li>
+              <li>SSO + audit logging</li>
+              <li>Cost caps &amp; alerting</li>
+            </ul>
+            <a class="btn btn-primary" href="#demo">Request Demo</a>
+          </div>
+
+          <div class="price reveal">
+            <h3>Enterprise</h3>
+            <p class="desc">For multi-entity rollouts, PE portfolios, and regulated industries.</p>
+            <div class="num">Custom</div>
+            <ul>
+              <li>Unlimited seats &amp; workspaces</li>
+              <li>Multi-tenant orchestration</li>
+              <li>Private model deployment options</li>
+              <li>Custom integrations &amp; APIs</li>
+              <li>Premium SLAs &amp; named CSM</li>
+              <li>SOC 2 + DPA on request</li>
+              <li>Quarterly executive reviews</li>
+            </ul>
+            <a class="btn" href="#demo">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FINAL CTA ========== -->
+    <section id="demo">
+      <div class="container">
+        <div class="final-cta reveal">
+          <h2>Give your sales team a closer.</h2>
+          <p>Turn every contact list into a ranked, personalized, revenue-generating motion — with humans in the loop and AI doing the heavy lifting.</p>
+          <a class="btn btn-primary btn-lg" href="#demo">Request Demo <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div>
+          <a class="brand" href="#top">
+            <span class="brand-mark">K</span>
+            <span class="brand-name">Klozr</span>
+          </a>
+          <p>The Autonomous Sales Execution Layer. Turn messy sales data into prioritized outreach, guided selling, and closed revenue.</p>
+        </div>
+        <div>
+          <h6>Platform</h6>
+          <a href="#platform">Capabilities</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#product">Product</a>
+          <a href="#ai">AI Layer</a>
+        </div>
+        <div>
+          <h6>Industries</h6>
+          <a href="#industries">Financial Services</a>
+          <a href="#industries">SaaS</a>
+          <a href="#industries">Manufacturing</a>
+          <a href="#industries">PE Portfolio</a>
+        </div>
+        <div>
+          <h6>Trust</h6>
+          <a href="#security">Security</a>
+          <a href="#admin">Admin</a>
+          <a href="#integrations">Integrations</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+        <div>
+          <h6>Company</h6>
+          <a href="#demo">Contact</a>
+          <a href="#demo">Request Demo</a>
+          <a href="#demo">Careers</a>
+          <a href="#demo">Press</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Klozr — Autonomous Sales Execution Layer</span>
+        <span>Built for revenue teams that close.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ============================================================
+       KLOZR — interactivity
+       Modules: nav scroll, mobile menu, theme toggle, reveal on scroll,
+       counters, hero AI typing, product tabs (with per-tab visuals),
+       outreach tone switching, industry toggle, micro-interactions.
+    ============================================================ */
+
+    (function () {
+      'use strict';
+
+      const $  = (s, c) => (c || document).querySelector(s);
+      const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
+
+      /* ---------- Nav: blur on scroll ---------- */
+      const nav = $('#nav');
+      const onScroll = () => {
+        if (window.scrollY > 8) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      /* ---------- Mobile menu ---------- */
+      const navToggle = $('#navToggle');
+      const mobileMenu = $('#mobileMenu');
+      navToggle && navToggle.addEventListener('click', () => {
+        const open = mobileMenu.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+      });
+      $$('.mobile-menu a').forEach(a => a.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }));
+
+      /* ---------- Theme toggle (dark/light) ---------- */
+      const themeToggle = $('#themeToggle');
+      const root = document.documentElement;
+      const stored = (() => { try { return localStorage.getItem('klozr-theme'); } catch (e) { return null; } })();
+      if (stored === 'light') root.setAttribute('data-theme', 'light');
+      themeToggle && themeToggle.addEventListener('click', () => {
+        const cur = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        const next = cur === 'light' ? 'dark' : 'light';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('klozr-theme', next); } catch (e) {}
+      });
+
+      /* ---------- Smooth-scroll easing fallback for older browsers ---------- */
+      $$('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href');
+          if (id.length < 2) return;
+          const t = $(id);
+          if (!t) return;
+          e.preventDefault();
+          const top = t.getBoundingClientRect().top + window.scrollY - 56;
+          window.scrollTo({ top, behavior: 'smooth' });
+        });
+      });
+
+      /* ---------- Reveal on scroll ---------- */
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      $$('.reveal').forEach(el => io.observe(el));
+
+      /* ---------- Animated counters ---------- */
+      const formatNum = (n, suffix) => {
+        // Smart formatting
+        let v;
+        if (n >= 1000 && (suffix === '+' || !suffix)) {
+          v = (n >= 10000) ? Math.round(n/1000) + 'K' : (n/1000).toFixed(1) + 'K';
+        } else {
+          v = Math.round(n).toLocaleString();
+        }
+        return v + (suffix || '');
+      };
+
+      const animateCounter = (el) => {
+        const target = parseFloat(el.dataset.target || '0');
+        const suffix = el.dataset.suffix || '';
+        const dur = 1600;
+        const start = performance.now();
+        const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+        function tick(now) {
+          const t = Math.min(1, (now - start) / dur);
+          const v = target * easeOut(t);
+          el.textContent = formatNum(v, suffix);
+          if (t < 1) requestAnimationFrame(tick);
+          else el.textContent = formatNum(target, suffix);
+        }
+        requestAnimationFrame(tick);
+      };
+
+      const counterIO = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { animateCounter(e.target); counterIO.unobserve(e.target); }
+        });
+      }, { threshold: 0.4 });
+      $$('.counter').forEach(el => counterIO.observe(el));
+
+      /* ---------- Plain numeric counters (AI cost stats) ---------- */
+      $$('[data-counter-num]').forEach(el => {
+        const target = parseFloat(el.dataset.target || '0');
+        const dur = 1800;
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(en => {
+            if (en.isIntersecting) {
+              const start = performance.now();
+              const tick = (now) => {
+                const t = Math.min(1, (now - start) / dur);
+                const v = target * (1 - Math.pow(1 - t, 3));
+                el.textContent = Math.round(v).toLocaleString();
+                if (t < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+              obs.unobserve(el);
+            }
+          });
+        }, { threshold: 0.4 });
+        obs.observe(el);
+      });
+
+      /* ---------- Hero AI typing effect ---------- */
+      const heroEmail = $('#heroEmail');
+      const heroText = "Dana — saw Northwind closed your Series C and is staffing up the revenue org. Two ideas worth 15 min: a scoring profile tuned to your historical book, and a compliance-aware draft layer your advisors can actually approve. Open to a quick look this week?";
+      const typeInto = (el, text, speed = 18) => {
+        el.innerHTML = '<span class="typing"></span>';
+        const node = el.firstChild;
+        let i = 0;
+        const tick = () => {
+          if (i < text.length) {
+            node.textContent += text.charAt(i++);
+            setTimeout(tick, speed + Math.random() * 18);
+          } else {
+            node.classList.remove('typing');
+          }
+        };
+        tick();
+      };
+      // Start typing once hero is visible
+      const heroObs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            typeInto(heroEmail, heroText, 16);
+            heroObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      heroObs.observe(heroEmail);
+
+      /* ---------- Product tabs ---------- */
+      const tabs = $$('.tabs .tab');
+      const panels = $$('.tab-panel');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const id = tab.dataset.tab;
+          tabs.forEach(t => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+          panels.forEach(p => p.classList.toggle('active', p.dataset.panel === id));
+          // Trigger draft re-type when entering outreach tab
+          if (id === 'outreach') redrawDraft(currentTone);
+        });
+      });
+
+      /* ---------- Outreach tone switching ---------- */
+      const drafts = {
+        executive: {
+          subj: "Two ideas for Q3 ramp at Northwind",
+          body: "Dana — saw Northwind closed your Series C and is staffing up the revenue org. Two ideas worth 15 minutes: a scoring profile tuned to your historical book, and a compliance-aware draft layer your advisors can actually approve. Worth a quick look this week?"
+        },
+        consultative: {
+          subj: "How peers are prioritizing post-Series C",
+          body: "Dana — most VPs of Sales we work with after a Series C struggle with the same thing: a great list, but no clear who-to-call-first. Klozr scores against your historical conversions and writes outreach in your brand voice. Reps approve, edit, or reject — humans always control what hits the wire. Open to comparing notes?"
+        },
+        warm: {
+          subj: "Quick thought after Northwind's funding news",
+          body: "Hey Dana — congrats on the round. Thought of you because we just rolled out a scoring + outreach layer with a few advisor-led teams that are growing fast. Reps like it because it cuts research time, and compliance likes it because nothing goes out without a human approval. Worth a 15-min coffee chat this week?"
+        },
+        technical: {
+          subj: "Klozr · scoring + draft layer for Northwind",
+          body: "Dana — Klozr is a multi-tenant execution layer that ingests your CRM + data sources, runs explainable scoring, generates personalized drafts via your model of choice (Claude / OpenAI / Azure), and gates send behind a human approval queue. Two-way Salesforce sync, SOC 2-aligned controls, BYO key. 20 minutes to walk through the architecture?"
+        }
+      };
+      let currentTone = 'executive';
+      const draftBody = $('#emailDraft');
+      const subjEl = $('#emailSubj');
+      const toneLabel = $('#toneLabel');
+      const toneNice = { executive: 'Executive', consultative: 'Consultative', warm: 'Warm', technical: 'Technical' };
+
+      function redrawDraft(tone) {
+        const d = drafts[tone] || drafts.executive;
+        subjEl.textContent = d.subj;
+        toneLabel.textContent = toneNice[tone];
+        if (draftBody) typeInto(draftBody, d.body, 12);
+      }
+
+      $$('.outreach-controls .chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          $$('.outreach-controls .chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentTone = chip.dataset.tone;
+          redrawDraft(currentTone);
+        });
+      });
+
+      // Initial draft (will retype when outreach tab is opened too)
+      if (draftBody) redrawDraft('executive');
+
+      /* ---------- Outreach action feedback ---------- */
+      $$('.draft-actions .pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const action = btn.dataset.action;
+          const original = btn.textContent;
+          if (action === 'approve') { btn.textContent = '✓ Sent'; btn.style.background = 'rgba(56,224,164,0.18)'; btn.style.color = '#7df0c0'; }
+          else if (action === 'regen') { btn.textContent = 'Regenerating…'; redrawDraft(currentTone); }
+          else if (action === 'reject') { btn.textContent = '✕ Rejected'; }
+          else if (action === 'edit') { btn.textContent = 'Editing…'; }
+          setTimeout(() => { btn.textContent = original; btn.style.background = ''; btn.style.color = ''; }, 1800);
+        });
+      });
+
+      /* ---------- Industry toggle ---------- */
+      const industries = {
+        fs: {
+          problem: "Advisors and brokers sit on thousands of cold contacts with stale titles, mismatched households, and unclear compliance status — and no consistent way to prioritize who to call.",
+          help: "Klozr normalizes contact data, enforces brand-and-compliance voice on every draft, scores prospects against your historical book, and routes only approved outreach.",
+          outcome: "More qualified meetings per advisor, less time on list cleanup, and a defensible audit trail for every outbound communication."
+        },
+        saas: {
+          problem: "Free-tier signups and shallow CRM data drown the team in noise. Reps chase low-intent leads, while genuinely close-ready accounts sit unworked.",
+          help: "Klozr fuses product usage, CRM, and intent signals into PQL scoring, then drafts grounded outreach. BYO model with per-workspace cost caps.",
+          outcome: "Higher PQL → SQL conversion, faster expansion motion, and clear AI ROI per campaign and per workspace."
+        },
+        mfg: {
+          problem: "Distributor and dealer lists live in spreadsheets. Cycles are long, contacts rotate, and reps can't tell which accounts will actually move the quarter.",
+          help: "Klozr runs account-based scoring against historical wins, generates structured re-engagement cadences, and creates owner-aware tasks in CRM.",
+          outcome: "Reps focus on accounts that actually move the quarter, with cleaner data flowing back into the system of record."
+        },
+        pe: {
+          problem: "Every portfolio company runs a different stack and motion. Operating partners can't compare performance, share playbooks, or see consolidated pipeline.",
+          help: "Multi-tenant Klozr workspaces per portco, with shared scoring profiles, brand voice templates, and central reporting for operating partners.",
+          outcome: "Faster value creation across every portco's revenue org — with a single console for the operating team."
+        }
+      };
+      const indProblem = $('#indProblem');
+      const indHelp = $('#indHelp');
+      const indOutcome = $('#indOutcome');
+      $$('.ind-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          $$('.ind-tab').forEach(t => t.setAttribute('aria-selected', t === tab ? 'true' : 'false'));
+          const k = tab.dataset.ind;
+          const d = industries[k];
+          if (!d) return;
+          [indProblem, indHelp, indOutcome].forEach(el => { el.style.opacity = 0; el.style.transform = 'translateY(6px)'; });
+          setTimeout(() => {
+            indProblem.textContent = d.problem;
+            indHelp.textContent = d.help;
+            indOutcome.textContent = d.outcome;
+            [indProblem, indHelp, indOutcome].forEach(el => { el.style.transition = 'opacity .35s ease, transform .35s ease'; el.style.opacity = 1; el.style.transform = 'none'; });
+          }, 120);
+        });
+      });
+
+      /* ---------- Subtle parallax tilt on hero mockup ---------- */
+      const mock = $('#heroMockup');
+      if (mock && window.matchMedia('(min-width: 1080px)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const wrap = mock.parentElement;
+        wrap.addEventListener('mousemove', (e) => {
+          const r = wrap.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5;
+          const y = (e.clientY - r.top) / r.height - 0.5;
+          mock.style.transform = `perspective(1200px) rotateY(${x * 4}deg) rotateX(${-y * 4}deg) translateZ(0)`;
+        });
+        wrap.addEventListener('mouseleave', () => { mock.style.transform = ''; });
+      }
+    })();
+  </script>
+</body>
+</html>
