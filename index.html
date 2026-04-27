@@ -8,7 +8,11 @@
   <meta name="description" content="Klozr is the AI Sales Engine that scores your best prospects, writes personalized outreach, guides follow-up, and helps your team close faster." />
   <meta property="og:title" content="Klozr — Autonomous Sales Execution Layer" />
   <meta property="og:description" content="Turn messy sales data into prioritized outreach, guided selling, and closed revenue." />
-  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'><stop offset='0' stop-color='%237c5cff'/><stop offset='1' stop-color='%2300d4ff'/></linearGradient></defs><rect rx='14' width='64' height='64' fill='url(%23g)'/><path d='M18 14h8v16l12-16h10L34 32l14 18H38L26 34v16h-8z' fill='white'/></svg>" />
+  <link rel="icon" type="image/png" href="assets/klozr-mark-64.png" />
+  <link rel="apple-touch-icon" href="assets/klozr-mark.png" />
+  <meta property="og:image" content="assets/klozr-logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="assets/klozr-logo.png" />
 
   <style>
     /* ============================================================
@@ -176,11 +180,11 @@
     .nav-inner { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.01em; font-size: 18px; }
     .brand-mark {
-      width: 30px; height: 30px; border-radius: 8px;
-      background: var(--grad-brand);
-      display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 14px;
-      box-shadow: 0 6px 18px -4px rgba(124,92,255,0.6), inset 0 1px 0 rgba(255,255,255,0.25);
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      filter: drop-shadow(0 4px 16px rgba(124,92,255,0.45));
     }
+    .brand-mark img { width: 100%; height: 100%; object-fit: contain; }
     .brand-name { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .nav-links { display: flex; align-items: center; gap: 28px; }
     .nav-links a { color: var(--text-dim); font-size: 14px; font-weight: 500; transition: color .2s var(--ease); }
@@ -386,6 +390,9 @@
       display: grid; place-items: center; font-size: 11px;
     }
 
+    /* Mockup stage — tight wrapper that the floating chips anchor to */
+    .mockup-stage { position: relative; }
+
     /* Floating chips around mockup */
     .float-chip {
       position: absolute; padding: 8px 12px; border-radius: 999px;
@@ -393,19 +400,20 @@
       backdrop-filter: blur(12px); font-size: 12px; font-weight: 600;
       box-shadow: var(--shadow-md);
       display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
       animation: floaty 6s ease-in-out infinite;
+      z-index: 2;
     }
     .float-chip .glow { width: 8px; height: 8px; border-radius: 50%; }
-    .chip-a { top: -16px; left: -22px; }
-    .chip-b { bottom: 28px; right: -28px; animation-delay: -2s; }
-    .chip-c { top: 38%; right: -36px; animation-delay: -4s; }
+    .chip-a { top: -14px; left: 18px; }
+    .chip-b { bottom: 18px; right: 16px; animation-delay: -2s; }
+    .chip-c { top: 42%; left: -8px; animation-delay: -4s; }
     @keyframes floaty {
       0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
+      50% { transform: translateY(-8px); }
     }
-    @media (max-width: 1080px) {
-      .chip-a, .chip-b, .chip-c { display: none; }
-    }
+    @media (max-width: 1280px) { .chip-c { display: none; } }
+    @media (max-width: 1080px) { .chip-a, .chip-b, .chip-c { display: none; } }
 
     /* ---------- KPI strip ---------- */
     .kpi {
@@ -868,7 +876,7 @@
   <header class="nav" id="nav">
     <div class="nav-inner">
       <a class="brand" href="#top">
-        <span class="brand-mark">K</span>
+        <span class="brand-mark"><img src="assets/klozr-mark.png" alt="Klozr" /></span>
         <span class="brand-name">Klozr</span>
       </a>
       <nav class="nav-links" aria-label="Primary">
@@ -927,10 +935,11 @@
         </div>
 
         <!-- Hero dashboard mockup -->
-        <div class="reveal" style="position: relative;">
-          <div class="float-chip chip-a"><span class="glow" style="background:#38e0a4;box-shadow:0 0 10px #38e0a4;"></span> 137 Tier-A leads ready</div>
-          <div class="float-chip chip-b"><span class="glow" style="background:#00d4ff;box-shadow:0 0 10px #00d4ff;"></span> Reply detected — paused</div>
-          <div class="float-chip chip-c"><span class="glow" style="background:#7c5cff;box-shadow:0 0 10px #7c5cff;"></span> Brief generated for 10:30 call</div>
+        <div class="reveal">
+          <div class="mockup-stage">
+            <div class="float-chip chip-a"><span class="glow" style="background:#38e0a4;box-shadow:0 0 10px #38e0a4;"></span> 137 Tier-A leads ready</div>
+            <div class="float-chip chip-b"><span class="glow" style="background:#00d4ff;box-shadow:0 0 10px #00d4ff;"></span> Reply detected — paused</div>
+            <div class="float-chip chip-c"><span class="glow" style="background:#7c5cff;box-shadow:0 0 10px #7c5cff;"></span> Brief ready · 10:30 call</div>
 
           <div class="mockup" id="heroMockup">
             <div class="mockup-bar">
@@ -1024,6 +1033,7 @@
               </div>
             </div>
           </div>
+          </div><!-- /.mockup-stage -->
         </div>
       </div>
     </section>

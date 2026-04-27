@@ -7,3 +7,7 @@ node_modules/
 .env
 .env.local
 .wrangler/
+
+# Source assets (ship optimized versions from assets/ instead)
+Klozr Modern Logo.png
+*.source.png
