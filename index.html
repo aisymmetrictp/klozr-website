@@ -409,20 +409,22 @@
       animation: floaty 7s ease-in-out infinite;
     }
     .float-chip .glow { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
-    /* Six chips, positioned in the hero whitespace around the mockup */
-    .f-1 { top: calc(var(--nav-h) + 18px); left: 24px; animation-delay: 0s; }
-    .f-2 { top: 46%; left: -14px; animation-delay: -1.4s; }
-    .f-3 { bottom: 70px; left: 18%; animation-delay: -2.6s; }
-    .f-4 { top: calc(var(--nav-h) + 18px); right: 18%; animation-delay: -3.4s; }
-    .f-5 { top: 56%; right: -10px; animation-delay: -4.6s; }
-    .f-6 { bottom: 80px; right: 22%; animation-delay: -5.6s; }
+    /* Six chips, positioned ONLY in the top and bottom stripes around the
+       hero content — never in the middle vertical band where the headline
+       and dashboard mockup live. */
+    .f-1 { top: 86px;    left: 3%;    animation-delay: 0s;    }   /* top-left wing */
+    .f-2 { top: 104px;   left: 28%;   animation-delay: -1.4s; }   /* top, above headline */
+    .f-3 { top: 92px;    right: 32%;  animation-delay: -2.4s; }   /* top, above mockup */
+    .f-4 { top: 110px;   right: 3%;   animation-delay: -3.4s; }   /* top-right wing */
+    .f-5 { bottom: 56px; left: 6%;    animation-delay: -4.4s; }   /* bottom-left, well below CTAs */
+    .f-6 { bottom: 76px; right: 8%;   animation-delay: -5.4s; }   /* bottom-right, below mockup */
     @keyframes floaty {
       0%,100% { transform: translateY(0); }
       50%     { transform: translateY(-7px); }
     }
-    /* Responsive: progressively hide chips that would crowd or overlap the mockup */
-    @media (max-width: 1280px) { .f-2, .f-5 { display: none; } }
-    @media (max-width: 1180px) { .f-3, .f-6 { display: none; } }
+    /* Responsive: progressively hide chips as the hero narrows */
+    @media (max-width: 1380px) { .f-2, .f-3 { display: none; } }
+    @media (max-width: 1180px) { .f-5, .f-6 { display: none; } }
     @media (max-width: 1080px) { .f-1, .f-4 { display: none; } }
 
     /* ---------- KPI strip ---------- */
@@ -848,6 +850,18 @@
     }
     .foot {
       display: grid; grid-template-columns: 1.4fr repeat(4, 1fr); gap: 32px;
+    }
+    .foot-brand {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 6px;
+    }
+    .foot-brand img {
+      width: 44px; height: 44px; object-fit: contain;
+      filter: drop-shadow(0 6px 22px rgba(124,92,255,0.4));
+    }
+    .foot-brand .wordmark {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+      background: var(--grad-text); -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     @media (max-width: 880px) { .foot { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 540px) { .foot { grid-template-columns: 1fr; } }
@@ -1732,9 +1746,9 @@
     <div class="container">
       <div class="foot">
         <div>
-          <a class="brand" href="#top">
-            <span class="brand-mark">K</span>
-            <span class="brand-name">Klozr</span>
+          <a class="foot-brand" href="#top">
+            <img src="assets/klozr-mark.png" alt="Klozr" />
+            <span class="wordmark">Klozr</span>
           </a>
           <p>The Autonomous Sales Execution Layer. Turn messy sales data into prioritized outreach, guided selling, and closed revenue.</p>
         </div>
