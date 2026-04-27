@@ -11,3 +11,7 @@ node_modules/
 # Source assets (ship optimized versions from assets/ instead)
 Klozr Modern Logo.png
 *.source.png
+
+.dev.vars*
+!.dev.vars.example
+!.env.example
